@@ -13,8 +13,29 @@
 
 ## Installation
 
-To use GoBar in your Go project, simply import the package
+To install GoBar, run the following command:
+
+```bash
+go get github.com/Hossein-Fazel/Gobar
+```
+
+To install a specific version (e.g., `v1.0.0`), run:
+
+```bash
+go get github.com/Hossein-Fazel/Gobar@v1.0.0
+```
+
+---
+
 ## Usage
+
+### Importing the Package
+
+To use GoBar in your Go project, import it as follows:
+
+```go
+import "github.com/Hossein-Fazel/Gobar"
+```
 
 ### Creating a Progress Bar
 
