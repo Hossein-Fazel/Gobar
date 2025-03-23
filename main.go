@@ -2,7 +2,7 @@ package main
 
 import(
 	"time"
-	"Gobar/progressbar"
+	"github.com/Hossein-Fazel/Gobar/progressbar"
 )
 
 func main(){
