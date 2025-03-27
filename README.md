@@ -9,7 +9,7 @@
 - **Reset Functionality**: Reset the progress bar to its initial state.
 - **Stop Functionality**: Stop the progress bar and print a new line when the task is complete.
 - **Unicode Support**: Use Unicode characters (e.g., `█`, `░`, `⬛`) for the filled and empty portions of the bar.
-- **Percentage Display**: Show the progress percentage with one decimal place.
+- **Multiple Display Formats**: Choose between full bar, percentage-only, or combined view
 
 ## Installation
 
@@ -93,62 +93,125 @@ pbar.Show()
 
 ## Examples
 
-### Example 1: Basic Usage
+## Basic Usage
 
 ```go
 package main
 
 import (
 	"time"
-	"github.com/yourusername/gobar/progressbar"
+	"github.com/Hossein-Fazel/gobar/progressbar"
 )
 
 func main() {
-	pbar := progressbar.NewProgressBar()
-	pbar.Set_filled("-")  // Set filled character
-
-	pbar.Reset()
-
+	// Create a new progress bar
+	pb := progressbar.NewProgressBar()
+	pb.Set_total(100)
+	
+	// Update progress
 	for i := 0; i <= 100; i++ {
-		pbar.Update(1)
-		pbar.Show()
+		pb.Update(1)
+		pb.Show()
 		time.Sleep(50 * time.Millisecond)
 	}
-
-	pbar.Stop()
+	pb.Stop()
 }
 ```
 
----
+## Display Modes Examples
 
-### Example 2: Custom Filled and Empty Character
+### 1. Full Mode (default)
+Shows bar with percentage
 
-Use a custom filled and empty character to create a unique progress bar:
+```go
+pb := progressbar.NewProgressBar()
+pb.Set_displayMode("full") // [##########] 50.0%
+```
 
+### 2. Bar Only Mode
+Shows just the progress bar
+
+```go
+pb.Set_displayMode("bar") // [##########]
+```
+
+### 3. Percent Only Mode
+Shows just the percentage
+
+```go
+pb.Set_displayMode("percent") // 50.0%
+```
+
+## Customization Examples
+
+### Custom Characters
+```go
+pb := progressbar.NewProgressBar()
+pb.Set_filled("■")
+pb.Set_emptyChar("─")
+pb.Set_displayMode("full") 
+// [■■■■■■────] 60.0%
+```
+
+### Different Size
+```go
+pb := progressbar.NewProgressBar()
+pb.Set_size(20) // Smaller bar
+pb.Set_displayMode("full")
+// [####      ] 40.0%
+```
+
+### Starting from a Position
+```go
+pb := progressbar.NewProgressBar()
+pb.Set_start(30) // Start at 30%
+pb.Set_displayMode("full")
+// [######    ] 30.0%
+```
+
+## Advanced Example
 ```go
 package main
 
 import (
+	"fmt"
 	"time"
 	"github.com/yourusername/gobar/progressbar"
 )
 
 func main() {
-	pbar := progressbar.NewProgressBar()
-	pbar.Set_total(100)
-	pbar.Set_start(0)
-	pbar.Set_size(30)
-	pbar.Set_filled("■")  // Set filled character
-	pbar.Set_emptyChar(" ") // Use a space as the empty character
-
-	pbar.Reset()
-
-	for i := 0; i <= 100; i++ {
-		pbar.Update(1)
-		pbar.Show()
+	fmt.Println("File Download Progress:")
+	
+	pb := progressbar.NewProgressBar()
+	pb.Set_filled("=")
+	pb.Set_emptyChar(" ")
+	pb.Set_size(30)
+	pb.Set_displayMode("full") // Try changing to "bar" or "percent"
+	pb.Set_total(250)
+	
+	// Simulate download chunks
+	for i := 0; i < 250; i += 10 {
+		pb.Update(10)
+		pb.Show()
 		time.Sleep(100 * time.Millisecond)
 	}
-
-	pbar.Stop()
+	
+	pb.Stop()
+	fmt.Println("Download complete!")
 }
 ```
+
+## API Reference
+
+- `NewProgressBar()` - Creates new progress bar with defaults
+- `Set_filled(string)` - Set filled character
+- `Set_emptyChar(string)` - Set empty character
+- `Set_total(int)` - Set total value
+- `Set_start(int)` - Set starting value
+- `Set_size(int)` - Set bar size
+- `Set_displayMode(string)` - Set display mode ("full", "bar", "percent")
+- `Update(int)` - Increment progress
+- `Show()` - Display current progress
+- `Stop()` - Complete progress bar
+- `Reset()` - Reset progress bar
+

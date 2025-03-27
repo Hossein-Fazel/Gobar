@@ -18,6 +18,7 @@ type Progressbar struct{
 	PBar string
 	Scale float64
 	IsStop bool
+	Display_mode string
 }
 
 func NewProgressBar() Progressbar{
@@ -31,6 +32,7 @@ func NewProgressBar() Progressbar{
 		PBar: "",
 		Scale: 2.0,
 		IsStop: false,
+		Display_mode: "full",
 	}
 	pbar.Reset()
 	return pbar
@@ -67,6 +69,16 @@ func (pbar *Progressbar) Set_start(start int) error{
 	return nil
 }
 
+func (pbar *Progressbar) Set_displayMode(dislay_mode string) error{
+	if dislay_mode == "full" || dislay_mode == "bar" || dislay_mode == "percent" {
+		pbar.Display_mode = dislay_mode
+		return nil
+	}else
+	{
+		return errors.New("display mode is unknown. select between 'full', 'bar' and 'percent'")
+	}
+}
+
 func (pbar *Progressbar) Set_size(size int){
 	pbar.Size = size
 	if size != 50{
@@ -78,7 +90,13 @@ func (pbar *Progressbar) Reset(){
 	pbar.IsStop = false
 	percent := math.Round(float64(pbar.Start)/ float64(pbar.Total) * 1000) / 10
 	progress := int(math.Floor(percent/ pbar.Scale))
-	pbar.PBar = fmt.Sprintf("\r[%v%v] %.1f%%", strings.Repeat(pbar.Filled, progress), strings.Repeat(pbar.Empty_char, pbar.Size - progress), percent)
+	if pbar.Display_mode == "full"{
+		pbar.PBar = fmt.Sprintf("\r[%v%v] %.1f%%", strings.Repeat(pbar.Filled, progress), strings.Repeat(pbar.Empty_char, pbar.Size - progress), percent)
+	}else if pbar.Display_mode == "bar"{
+		pbar.PBar = fmt.Sprintf("\r[%v%v]", strings.Repeat(pbar.Filled, progress), strings.Repeat(pbar.Empty_char, pbar.Size - progress))	
+	}else if pbar.Display_mode == "percent"{
+		pbar.PBar = fmt.Sprintf("\r%.1f%%", percent)
+	}
 }
 
 func (pbar *Progressbar) Update(value int){
@@ -91,9 +109,15 @@ func (pbar *Progressbar) Update(value int){
 		}
 
 		percent = math.Round(percent*10) / 10
-
 		progress := int(math.Floor(percent/ pbar.Scale))
-		pbar.PBar = fmt.Sprintf("\r[%v%v] %.1f%%", strings.Repeat(pbar.Filled, progress), strings.Repeat(pbar.Empty_char, pbar.Size - progress), percent)
+
+		if pbar.Display_mode == "full"{
+			pbar.PBar = fmt.Sprintf("\r[%v%v] %.1f%%", strings.Repeat(pbar.Filled, progress), strings.Repeat(pbar.Empty_char, pbar.Size - progress), percent)
+		}else if pbar.Display_mode == "bar"{
+			pbar.PBar = fmt.Sprintf("\r[%v%v]", strings.Repeat(pbar.Filled, progress), strings.Repeat(pbar.Empty_char, pbar.Size - progress))	
+		}else if pbar.Display_mode == "percent"{
+			pbar.PBar = fmt.Sprintf("\r%.1f%%", percent)
+		}
 	}else{
 		fmt.Println("This progress bar has stopped")
 	}
